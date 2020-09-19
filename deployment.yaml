@@ -28,7 +28,7 @@ metadata:
   name: web
 spec:
   ports:
-  - nodePort: 32223
+  - nodePort: 32323
     port: 80
     protocol: TCP
     targetPort: 80
