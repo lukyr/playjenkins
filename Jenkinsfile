@@ -5,7 +5,30 @@ pipeline {
     dockerImage = ""
   }
 
-  agent { label 'jenkins-slave' }
+  agent {
+    kubernetes {
+      label 'jenkins-slave'
+      defaultContainer 'jnlp'
+      yaml """
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+      - name: dind
+        image: docker:18.09-dind
+        securityContext:
+          privileged: true
+      - name: docker
+        env:
+        - name: DOCKER_HOST
+          value: 127.0.0.1
+        image: docker:18.09
+        command:
+        - cat
+        tty: true
+    """
+        }
+      }
 
   stages {
 
@@ -15,20 +38,21 @@ pipeline {
       }
     }
 
-    stage('Build image') {
-      steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+    stage('Build Image') {
+      steps {
+        container('docker') {
+          // Build new image
+          sh "until docker ps; do sleep 3; done && docker build -t ${registry}:${env.GIT_COMMIT} ."
         }
       }
     }
 
     stage('Push Image') {
-      steps{
-        script {
-          docker.withRegistry( "" ) {
-            dockerImage.push()
-          }
+      steps {
+        container('docker') {
+          // Build new image
+          // Publish new image
+          sh "docker push ${registry}:${env.GIT_COMMIT}"
         }
       }
     }
