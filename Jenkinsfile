@@ -8,34 +8,8 @@ pipeline {
   agent {
     kubernetes {
       label 'jenkins-slaves'
-      defaultContainer 'jnlp-slave'
-      yaml """
-    apiVersion: v1
-    kind: Pod
-    spec:
-      containers:
-      - name: dind
-        image: docker:18.09-dind
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - name: dockersock
-          mountPath: /var/run/docker.sock
-      volumes:
-      - name: dockersock
-        hostPath:
-          path: /var/run/docker.sock 
-      - name: docker
-        env:
-        - name: DOCKER_HOST
-          value: 127.0.0.1
-        image: docker:18.09
-        command:
-        - cat
-        tty: true
-    """
-        }
       }
+    }
 
   stages {
 
