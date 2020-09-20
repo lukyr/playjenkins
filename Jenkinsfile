@@ -18,6 +18,13 @@ pipeline {
         image: docker:18.09-dind
         securityContext:
           privileged: true
+        volumeMounts:
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+      volumes:
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock 
       - name: docker
         env:
         - name: DOCKER_HOST
