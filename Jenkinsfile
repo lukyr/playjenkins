@@ -26,11 +26,6 @@ spec:
     command:
     - cat
     tty: true
-  - name: jnlp
-    image: jenkins/jnlp-slave:latest
-    command:
-    - cat
-    tty: true
 """
     }
   }
