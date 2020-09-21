@@ -27,7 +27,7 @@ spec:
     - cat
     tty: true
   - name: jnlp
-    image: jenkins/inbound-agent
+    image: jenkins/inbound-agent:latest
     command:
     - cat
     tty: true
