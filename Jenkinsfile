@@ -1,7 +1,7 @@
 pipeline {
 
   environment {
-    registry = "192.168.0.105:5000/lukyr/web"
+    registry = "datahubid/web"
     dockerImage = ""
   }
 
@@ -30,11 +30,14 @@ pipeline {
     }
 
     stage('Push Image') {
+       environment {
+        DOCKERHUB_CREDS = credentials('dockerhub')
+      }
       steps {
         container('docker') {
           // Build new image
           // Publish new image
-          sh "docker push ${registry}:${env.GIT_COMMIT}"
+          sh "docker login --username $DOCKERHUB_CREDS_USR --password $DOCKERHUB_CREDS_PSW && docker push ${registry}:${env.GIT_COMMIT}"
         }
       }
     }
